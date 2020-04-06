@@ -23,7 +23,7 @@ const oidc = new Provider(`https://${process.env.HEROKU_APP_NAME}.herokuapp.com`
   clients: [
     {
       client_id: 'foo',
-      redirect_uris: ['https://example.com'],
+      redirect_uris: ['https://infinite-spire-83057.herokuapp.com'],
       response_types: ['id_token'],
       grant_types: ['implicit'],
       token_endpoint_auth_method: 'none',
