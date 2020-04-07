@@ -5,6 +5,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const Provider = require('oidc-provider');
+var dotenv = require('dotenv');
+dotenv.config();
 
 assert(process.env.HEROKU_APP_NAME, 'process.env.HEROKU_APP_NAME missing');
 assert(process.env.PORT, 'process.env.PORT missing');
@@ -18,7 +20,13 @@ const jwks = require('./jwks.json');
 // simple account model for this application, user list is defined like so
 const Account = require('./account');
 
-const oidc = new Provider(`https://${process.env.HEROKU_APP_NAME}.herokuapp.com`, {
+var ISSUER;
+if (process.env.HEROKU_APP_NAME == '.') // if runs locally
+    ISSUER = 'https://localhost';
+else {
+    ISSUER = `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`;
+}
+const oidc = new Provider(ISSUER, {
   adapter: RedisAdapter,
   clients: [
     {
