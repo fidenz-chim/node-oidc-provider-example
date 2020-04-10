@@ -31,7 +31,8 @@ const oidc = new Provider(ISSUER, {
   clients: [
     {
       client_id: 'foo',
-      redirect_uris: ['https://infinite-spire-83057.herokuapp.com'],
+      // redirect_uris: ['https://infinite-spire-83057.herokuapp.com'],
+      redirect_uris: ['https://rptest.com'],
       response_types: ['id_token'],
       grant_types: ['implicit'],
       token_endpoint_auth_method: 'none',
@@ -49,6 +50,7 @@ const oidc = new Provider(ISSUER, {
   claims: {
     openid: ['sub'],
     email: ['email', 'email_verified'],
+    profile: ['name', 'middle_name']
   },
 
   // let's tell oidc-provider where our own interactions will be

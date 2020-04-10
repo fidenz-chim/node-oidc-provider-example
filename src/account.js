@@ -11,11 +11,17 @@ db.defaults({
       id: '23121d3c-84df-44ac-b458-3d63a9a05497',
       email: 'foo@example.com',
       email_verified: true,
+      name:'foo name',
+      middle_name: 'middle f name',
+
     },
     {
       id: 'c2ac2b4a-2262-4e2f-847a-a40dd3c4dcd5',
       email: 'bar@example.com',
       email_verified: false,
+      name:'bar name',
+      middle_name: 'middle b name',
+
     },
   ],
 }).write();
@@ -37,6 +43,8 @@ class Account {
           sub: id,
           email: account.email,
           email_verified: account.email_verified,
+          name:account.name,
+          middle_name:account.middle_name,
         };
       },
     };
