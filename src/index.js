@@ -22,7 +22,7 @@ const Account = require('./account');
 
 var ISSUER;
 if (process.env.HEROKU_APP_NAME == '.') // if runs locally
-    ISSUER = 'https://localhost';
+    ISSUER = 'https://optest.com';
 else {
     ISSUER = `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`;
 }
@@ -65,9 +65,9 @@ const oidc = new Provider(ISSUER, {
   features: {
     // disable the packaged interactions
     devInteractions: { enabled: false },
-
     introspection: { enabled: true },
     revocation: { enabled: true },
+    registration: {enabled:true},
   },
 });
 
@@ -183,4 +183,5 @@ expressApp.get('/interaction/:uid/abort', setNoCache, async (req, res, next) => 
 expressApp.use(oidc.callback);
 
 // express listen
+console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 expressApp.listen(process.env.PORT);
