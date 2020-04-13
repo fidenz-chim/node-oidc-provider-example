@@ -1,14 +1,16 @@
 const low = require('lowdb');
-const Memory = require('lowdb/adapters/Memory');
+// const Memory = require('lowdb/adapters/Memory');
+const redisAdapter = require('./redisAdapter.js');
 
-const db = low(new Memory());
+// const db = low(new Memory());
+var accAdp = new redisAdapter('account');
 
 const assert = require('assert');
 
-db.defaults({
-  users: [
+
+var default_users =   {users: [
     {
-      id: '23121d3c-84df-44ac-b458-3d63a9a05497',
+      id: 'acc10',
       email: 'foo@example.com',
       email_verified: true,
       name:'foo name',
@@ -16,21 +18,29 @@ db.defaults({
 
     },
     {
-      id: 'c2ac2b4a-2262-4e2f-847a-a40dd3c4dcd5',
+      id: 'acc11',
       email: 'bar@example.com',
       email_verified: false,
       name:'bar name',
       middle_name: 'middle b name',
 
     },
-  ],
-}).write();
+    ]
+};
+console.log(default_users.users[0]);
+console.log(default_users.users[1]);
+
+accAdp.hupsert(default_users.users[0].id,default_users.users[0]);
+console.log('user0 added');
+accAdp.hupsert(default_users.users[1].id,default_users.users[1]);
+console.log('user1 added');
 
 class Account {
   // This interface is required by oidc-provider
   static async findAccount(ctx, id) {
     // This would ideally be just a check whether the account is still in your storage
-    const account = db.get('users').find({ id }).value();
+    console.log('findAccount id -',id);
+    const account = await accAdp.find(id);
     if (!account) {
       return undefined;
     }
@@ -56,7 +66,9 @@ class Account {
       assert(password, 'password must be provided');
       assert(email, 'email must be provided');
       const lowercased = String(email).toLowerCase();
-      const account = db.get('users').find({ email: lowercased }).value();
+      // const account = db.get('users').find({ email: lowercased }).value();
+      const account = await accAdp.findByEmail(email);
+      console.log('account',account);
       assert(account, 'invalid credentials provided');
 
       return account.id;

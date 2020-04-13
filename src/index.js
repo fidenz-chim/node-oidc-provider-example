@@ -15,6 +15,7 @@ assert.equal(process.env.SECURE_KEY.split(',').length, 2, 'process.env.SECURE_KE
 assert(process.env.REDIS_URL, 'process.env.REDIS_URL missing, run `heroku-redis:hobby-dev`');
 
 const RedisAdapter = require('./redis_adapter');
+
 const jwks = require('./jwks.json');
 
 // simple account model for this application, user list is defined like so

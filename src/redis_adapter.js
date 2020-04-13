@@ -8,6 +8,7 @@ const consumable = new Set([
   'AuthorizationCode',
   'RefreshToken',
   'DeviceCode',
+  'Account',
 ]);
 
 function grantKeyFor(id) {
