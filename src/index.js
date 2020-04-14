@@ -91,6 +91,7 @@ function setNoCache(req, res, next) {
 
 expressApp.get('/interaction/:uid', setNoCache, async (req, res, next) => {
   try {
+    console.log('/interaction/:uid');
     const details = await oidc.interactionDetails(req, res);
     console.log('see what else is available to you for interaction views', details);
     const { uid, prompt, params } = details;
@@ -122,6 +123,7 @@ expressApp.get('/interaction/:uid', setNoCache, async (req, res, next) => {
 
 expressApp.post('/interaction/:uid/login', setNoCache, parse, async (req, res, next) => {
   try {
+    console.log('/interaction/:uid/login');
     const { uid, prompt, params } = await oidc.interactionDetails(req, res);
     const client = await oidc.Client.find(params.client_id);
 
@@ -156,6 +158,7 @@ expressApp.post('/interaction/:uid/login', setNoCache, parse, async (req, res, n
 
 expressApp.post('/interaction/:uid/confirm', setNoCache, parse, async (req, res, next) => {
   try {
+    console.log('/interaction/:uid/confirm');
     const result = {
       consent: {
         // rejectedScopes: [], // < uncomment and add rejections here
@@ -170,6 +173,7 @@ expressApp.post('/interaction/:uid/confirm', setNoCache, parse, async (req, res,
 
 expressApp.get('/interaction/:uid/abort', setNoCache, async (req, res, next) => {
   try {
+    console.log('/interaction/:uid/abort');
     const result = {
       error: 'access_denied',
       error_description: 'End-User aborted interaction',
