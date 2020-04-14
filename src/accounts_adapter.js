@@ -1,7 +1,6 @@
 const Redis = require('ioredis'); // eslint-disable-line import/no-unresolved
 const isEmpty = require('lodash/isEmpty');
 
-console.log('on redisAdapter.js');
 const client = new Redis(process.env.REDIS_URL, { keyPrefix: 'rptest:' });
 
 function jsonToKeyVal(obj){
@@ -14,11 +13,7 @@ function jsonToKeyVal(obj){
     return arr;
 }
 
-function emailKeyFor(email) {
-  return `email:${email}`;
-}
-
-class RedisAdapter {
+class AccountsAdapter {
     //name shold be the name of the collection
   constructor(name) {
     this.name = name;
@@ -30,29 +25,27 @@ class RedisAdapter {
      console.log(...vals);
      console.log('this.key(id)',this.key(id));
      client.hmset(this.key(id),vals);
-     console.log('emailKeyFor(payload.email)',emailKeyFor(payload.email));
+     console.log('emailKeyFor(payload.email)',this.emailKeyFor(payload.email));
      client.set(emailKeyFor(payload.email),this.key(id));
 
   }
 
   async upsert(id, payload) {
-    client.set(this.key(id),payload);
+    client.set(this.key(id),JSON.stringify(payload));
+    client.set(this.emailKeyFor(payload.email),this.key(id));
 
   }
 
   async find(id) {
-    // const data = await client.get(this.key(id));
-    const data = await client.hgetall(id);
-    console.log('find - data',data );
+    const data = await client.get(this.key(id));
     if (isEmpty(data))
         return undefined;
     else
-        return data;
+        return JSON.parse(data);
   }
 
   async findByEmail(email) {
-    const id = await client.get(emailKeyFor(email));
-    console.log('findByEmail - id',id);
+    const id = await client.get(this.emailKeyFor(email));
     if (isEmpty(id))
         return undefined;
     else
@@ -64,9 +57,23 @@ class RedisAdapter {
   }
 
   key(id) {
-    return `${this.name}:${id}`;
+      if (id.indexOf(this.name) == 0){
+          return id;
+      }
+      else {
+          return `${this.name}:${id}`;
+      }
   }
+
+  emailKeyFor(email) {
+    if (email.indexOf('email:') == 0){
+        return email;
+    }
+    else {
+        return `email:${email}`;
+    }
+  }
+
 }
 
-
-module.exports = RedisAdapter;
+module.exports = AccountsAdapter;

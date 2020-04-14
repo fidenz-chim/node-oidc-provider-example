@@ -1,9 +1,8 @@
 const low = require('lowdb');
 // const Memory = require('lowdb/adapters/Memory');
-const redisAdapter = require('./redisAdapter.js');
+const accountsAdapter = require('./accounts_adapter.js');
 
-// const db = low(new Memory());
-var accAdp = new redisAdapter('account');
+var accAdp = new accountsAdapter('account');
 
 const assert = require('assert');
 
@@ -30,16 +29,15 @@ var default_users =   {users: [
 console.log(default_users.users[0]);
 console.log(default_users.users[1]);
 
-accAdp.hupsert(default_users.users[0].id,default_users.users[0]);
+accAdp.upsert(default_users.users[0].id,default_users.users[0]);
 console.log('user0 added');
-accAdp.hupsert(default_users.users[1].id,default_users.users[1]);
+accAdp.upsert(default_users.users[1].id,default_users.users[1]);
 console.log('user1 added');
 
 class Account {
   // This interface is required by oidc-provider
   static async findAccount(ctx, id) {
     // This would ideally be just a check whether the account is still in your storage
-    console.log('findAccount id -',id);
     const account = await accAdp.find(id);
     if (!account) {
       return undefined;
@@ -67,8 +65,7 @@ class Account {
       assert(email, 'email must be provided');
       const lowercased = String(email).toLowerCase();
       // const account = db.get('users').find({ email: lowercased }).value();
-      const account = await accAdp.findByEmail(email);
-      console.log('account',account);
+      const account = await accAdp.findByEmail(lowercased);
       assert(account, 'invalid credentials provided');
 
       return account.id;
