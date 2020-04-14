@@ -37,6 +37,7 @@ const oidc = new Provider(ISSUER, {
       response_types: ['id_token'],
       grant_types: ['implicit'],
       token_endpoint_auth_method: 'none',
+      post_logout_redirect_uris:['https://rptest.com/logout']
     },
   ],
   jwks,
@@ -69,6 +70,8 @@ const oidc = new Provider(ISSUER, {
     introspection: { enabled: true },
     revocation: { enabled: true },
     registration: {enabled:true},
+    sessionManagement: {enabled:true},
+
   },
 });
 
