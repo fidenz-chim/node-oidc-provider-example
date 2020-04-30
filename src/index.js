@@ -8,6 +8,8 @@ const Provider = require('oidc-provider');
 var dotenv = require('dotenv');
 dotenv.config();
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
 assert(process.env.HEROKU_APP_NAME, 'process.env.HEROKU_APP_NAME missing');
 assert(process.env.PORT, 'process.env.PORT missing');
 assert(process.env.SECURE_KEY, 'process.env.SECURE_KEY missing, run `heroku addons:create securekey`');
@@ -71,6 +73,7 @@ const oidc = new Provider(ISSUER, {
     revocation: { enabled: true },
     registration: {enabled:true},
     sessionManagement: {enabled:true},
+    encryption: {enabled:true},
 
   },
 });
