@@ -42,7 +42,7 @@ class Account {
     if (!account) {
       return undefined;
     }
-
+    console.log('findAccount:account',account);
     return {
       accountId: id,
       // and this claims() method would actually query to retrieve the account claims

@@ -8,6 +8,8 @@ const Provider = require('oidc-provider');
 var dotenv = require('dotenv');
 dotenv.config();
 
+var cors = require('cors');
+
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 assert(process.env.HEROKU_APP_NAME, 'process.env.HEROKU_APP_NAME missing');
@@ -72,7 +74,7 @@ const oidc = new Provider(ISSUER, {
     introspection: { enabled: true },
     revocation: { enabled: true },
     registration: {enabled:true},
-    sessionManagement: {enabled:true},
+    sessionManagement: {enabled:false},
     encryption: {enabled:true},
 
   },
@@ -86,6 +88,15 @@ const expressApp = express();
 expressApp.set('trust proxy', true);
 expressApp.set('view engine', 'ejs');
 expressApp.set('views', path.resolve(__dirname, 'views'));
+
+var corsOptions = {
+  origin: 'https://rptest.com',
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE, OPTIONS",
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+expressApp.use(cors(corsOptions));
+console.log('cors enabled');
+
 
 const parse = bodyParser.urlencoded({ extended: false });
 
